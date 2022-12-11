@@ -1,0 +1,29 @@
+{{- /* For all namespaces defined */}}
+{{- range $namespaceKey, $namespaceObject := .Values.roleBindings }}
+{{- /*  For all roles defined in each namespace */}}
+{{- range $roleKey, $roleObject := $namespaceObject }}
+{{- /*  if Users are defined */}}
+{{- if $roleObject.users }}
+---
+{{- /*  Define a RoleBinding 'namespace'-'role' */}}
+apiVersion: {{ $.Values.global.apiVersion.clusterRoleBinding }}
+kind: RoleBinding
+metadata:
+  name: "{{ $namespaceKey }}-{{ $roleKey }}-users"
+  namespace: "{{ $namespaceKey }}"
+roleRef:
+  name: "{{ $roleKey }}"
+subjects:
+{{- /*  For all subject types (User, Group) */}}
+{{- range $entityKey, $entityValues := $roleObject }}
+{{- if eq $entityKey "users" }}
+{{- range $entityValues }}
+- kind: User
+  name: {{ . | quote }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- end }}
+{{- end }}
+{{- end }}

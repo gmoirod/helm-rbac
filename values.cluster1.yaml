@@ -1,0 +1,39 @@
+##########################
+# ROLE BINDINGS
+##########################
+
+# Specific users/groups for this cluster
+groups:
+  clusterspecificgroup1:
+  - clusterspecificuser1
+  - clusterspecificuser2
+
+# Specific Rolebindings for this cluster
+roleBindings:
+
+  #######################################
+  default: {}
+
+  #######################################
+  namespace1:
+    admin:
+      groups:
+      - clusterspecificuser1
+    edit:      
+      serviceAccounts:
+      - namespace2/serviceaccount2
+    view:
+      groups:
+      - clusterspecificuser2
+
+  #######################################
+  namespace2:
+    admin:
+      groups:
+      - clusterspecificuser2
+    edit:      
+      serviceAccounts:
+      - namespace2/serviceaccount1
+    view:
+      groups:
+      - clusterspecificuser1

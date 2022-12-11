@@ -1,0 +1,23 @@
+{{- /*  For all clusterroles defined */}}
+{{- range $clusterRoleKey, $clusterRoleObject := $.Values.clusterRoleBindings }}
+{{- /*  if Users are defined */}}
+{{- if $clusterRoleObject.users }}
+---
+apiVersion: {{ $.Values.global.apiVersion.clusterRoleBinding }}
+kind: ClusterRoleBinding
+metadata:
+  name: "rbac-{{ $clusterRoleKey }}-users"
+roleRef:
+  name: "{{ $clusterRoleKey }}"
+subjects:
+
+{{- /*  For all Users */}}
+{{- range $entityKey, $entityValues := $clusterRoleObject }}
+{{- range $entityValues }}
+- kind: User
+  name: {{ . | quote }}
+{{- end }}
+{{- end }}
+
+{{- end }}
+{{- end }}

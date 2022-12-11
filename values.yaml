@@ -1,0 +1,37 @@
+##############################################################
+# Default values
+# Used to define default values between clusters (Groups, ClusterRoleBindings)
+# In values files specifically for a cluster :
+# - Define RoleBindings
+# - Extend/Override Groups
+# - Extend/Override ClusterRoleBindings
+##############################################################
+
+global:
+  apiVersion:
+    group: user.openshift.io/v1
+    roleBinding: authorization.openshift.io/v1
+    clusterRoleBinding: authorization.openshift.io/v1
+
+
+# Default groups to define in all clusters
+groups:
+  group1:
+  - user1
+  - user2
+
+  group2:
+  - user1
+  - user2
+
+# Default RoleBindings to define in all clusters
+roleBindings: {}
+
+# Default ClusterRoleBindings to define in all clusters
+clusterRoleBindings:
+  cluster-admin:
+    groups:
+    - group1
+  cluster-reader:
+    groups:
+    - group2
