@@ -60,3 +60,45 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Create the Role apiGroup
+*/}}
+{{- define "role.apiGroup" -}}
+{{ regexSplit "/v[0-9]+" $.Values.global.apiVersion.role 2 | first }}
+{{- end }}
+
+{{/*
+Create the ClusterRole apiGroup
+*/}}
+{{- define "clusterRole.apiGroup" -}}
+{{ regexSplit "/v[0-9]+" $.Values.global.apiVersion.clusterRole 2 | first }}
+{{- end }}
+
+{{/*
+Create the RoleBinding apiGroup
+*/}}
+{{- define "roleBinding.apiGroup" -}}
+{{ regexSplit "/v[0-9]+" $.Values.global.apiVersion.roleBinding 2 | first }}
+{{- end }}
+
+{{/*
+Create the ClusterRoleBinding apiGroup
+*/}}
+{{- define "clusterRoleBinding.apiGroup" -}}
+{{ regexSplit "/v[0-9]+" $.Values.global.apiVersion.clusterRoleBinding 2 | first }}
+{{- end }}
+
+{{/*
+Create the group apiGroup
+*/}}
+{{- define "group.apiGroup" -}}
+{{ regexSplit "/v[0-9]+" $.Values.global.apiVersion.group 2 | first }}
+{{- end }}
+
+{{/*
+Create the user apiGroup
+*/}}
+{{- define "user.apiGroup" -}}
+{{ regexSplit "/v[0-9]+" $.Values.global.apiVersion.user 2 | first }}
+{{- end }}

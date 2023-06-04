@@ -12,13 +12,16 @@ metadata:
   name: "{{ $namespaceKey }}-{{ $roleKey }}-users"
   namespace: "{{ $namespaceKey }}"
 roleRef:
+  apiGroup: {{ include "role.apiGroup" $ }}
+  kind: Role
   name: "{{ $roleKey }}"
 subjects:
 {{- /*  For all subject types (User, Group) */}}
 {{- range $entityKey, $entityValues := $roleObject }}
 {{- if eq $entityKey "users" }}
 {{- range $entityValues }}
-- kind: User
+- apiGroup: {{ include "user.apiGroup" $ }}
+  kind: User
   name: {{ . | quote }}
 {{- end }}
 {{- end }}

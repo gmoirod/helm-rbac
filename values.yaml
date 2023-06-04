@@ -1,6 +1,11 @@
 ##############################################################
 # Default values
-# Used to define default values between clusters (Groups, ClusterRoleBindings)
+# Used to define common values between clusters :
+# - Roles,
+# - ClusterRoles,
+# - Groups,
+# - ClusterRoleBindings
+#
 # In values files specifically for a cluster :
 # - Define RoleBindings
 # - Extend/Override Groups
@@ -8,30 +13,80 @@
 ##############################################################
 
 global:
+  openshift: false
   apiVersion:
-    group: user.openshift.io/v1
-    roleBinding: authorization.openshift.io/v1
-    clusterRoleBinding: authorization.openshift.io/v1
+    role: rbac.authorization.k8s.io/v1
+    clusterRole: rbac.authorization.k8s.io/v1
+    roleBinding: rbac.authorization.k8s.io/v1
+    clusterRoleBinding: rbac.authorization.k8s.io/v1
+    group: rbac.authorization.k8s.io/v1
+    user: rbac.authorization.k8s.io/v1
 
+######################################
+# Custom Roles and ClusterRoles
+######################################
+roles: #{}
+  default:
+    myCustomRole:
+    - apiGroups: [""]
+      resources: ["pods", "configmaps"]
+      verbs: ["get", "list"]
+    - apiGroups: [""]
+      resources: ["pvc"]
+      verbs: ["get", "list"]
 
-# Default groups to define in all clusters
+clusterRoles: #{}
+  myCustomClusterRole:
+  - apiGroups: [""]
+    resources: ["pods", "pods/log"]
+    verbs: ["get", "list"]
+
+######################################
+# Groups to define in all clusters
+######################################
 groups:
-  group1:
-  - user1
-  - user2
+  admins:
+  - alice
 
-  group2:
-  - user1
-  - user2
+  devTeam1:
+  - bob
+  - charlie
 
+  qaTeam:
+  - dwayne
+  - elliot
+
+######################################
 # Default RoleBindings to define in all clusters
-roleBindings: {}
+######################################
+roleBindings: #{}
+  # Namespace
+  default: {}
 
+  # Namespace
+  development:
+    # Role/ClusterRole
+    admin:
+      groups:
+      - devTeam1
+      serviceAccounts:
+      - namespace1:serviceaccount
+    edit:
+      serviceAccounts:
+      - namespace2:serviceaccount
+    view:
+      users:
+      - dwayne
+
+######################################
 # Default ClusterRoleBindings to define in all clusters
+######################################
 clusterRoleBindings:
+
   cluster-admin:
     groups:
-    - group1
+    - admins
+
   cluster-reader:
     groups:
-    - group2
+    - devTeam1
