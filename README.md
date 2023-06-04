@@ -1,10 +1,10 @@
-# Simple and centralized RBAC Management in Kubernetes/Openshift
+# Simple and centralized RBAC Management in Kubernetes/Openshift 📜 👮‍♂️
 
 Define your Kubernetes RBAC rules in a centralized and automatically way without any CRDs ! 🚀
 
 ## How to
 
-1. Fork this repo
+1. [Fork this repo](/fork)
 2. [Define your rules](#rbac-rules-maintenance)
 3. [Deploy the way you want](#deploy-it) !
 
