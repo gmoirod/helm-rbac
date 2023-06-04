@@ -4,8 +4,8 @@ Define your Kubernetes RBAC rules in a centralized and automatically way without
 
 ## How to
 
-1. [Fork this repo](/fork)
-2. [Define your rules](#rbac-rules-maintenance)
+1. [Fork this repo](https://github.com/gmoirod/helm-rbac/fork)
+2. [Define your rules](#rbac-rules-maintainance)
 3. [Deploy the way you want](#deploy-it) !
 
 ## Deploy it
