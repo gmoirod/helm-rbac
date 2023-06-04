@@ -1,3 +1,4 @@
+{{- if .Values.global.openshift -}}
 {{- /*  For all groups defined */}}
 {{- range $groupKey, $groupObject := $.Values.groups }}
 ---
@@ -10,4 +11,5 @@ users:
 - {{ . | quote }}
 {{- end }}
 
+{{- end }}
 {{- end }}

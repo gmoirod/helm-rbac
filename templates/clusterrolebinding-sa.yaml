@@ -8,6 +8,8 @@ kind: ClusterRoleBinding
 metadata:
   name: "rbac-{{ $clusterRoleKey }}-sa"
 roleRef:
+  apiGroup: {{ include "clusterRole.apiGroup" $ }}
+  kind: ClusterRole
   name: "{{ $clusterRoleKey }}"
 subjects:
 
@@ -15,8 +17,8 @@ subjects:
 {{- range $entityKey, $entityValues := $clusterRoleObject }}
 {{- range $entityValues }}
 - kind: ServiceAccount
-  namespace: {{ (split "/" .)._0 | quote }}
-  name: {{ (split "/" .)._1 | quote }}
+  namespace: {{ (split ":" .)._0 | quote }}
+  name: {{ (split ":" .)._1 | quote }}
 {{- end }}
 {{- end }}
 

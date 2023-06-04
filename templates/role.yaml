@@ -1,0 +1,19 @@
+{{- /* For all namespaces defined */}}
+{{- range $namespaceKey, $namespaceObject := .Values.roles }}
+{{- /*  For all roles defined in each namespace */}}
+{{- range $roleKey, $roleObject := $namespaceObject }}
+---
+{{- /*  Define a Role */}}
+apiVersion: {{ $.Values.global.apiVersion.role }}
+kind: Role
+metadata:
+  name: "{{ $roleKey }}"
+  namespace: "{{ $namespaceKey }}"
+rules:
+{{- /*  Iterate over rules */}}
+{{- range $roleObject }}
+- {{- toYaml . | nindent 2 }}
+{{- end }}
+
+{{- end }}
+{{- end }}

@@ -1,29 +1,22 @@
-# RBAC Management in Kubernetes/Openshift
+# Simple and centralized RBAC Management in Kubernetes/Openshift
 
-## Description
-
-This repo defines a Helm Chart allowing to centralize and maintain RBAC for each Kubernetes/Openshift cluster.
-
-Guidelines :
-- A `User` belongs to a `Group`
-- `Groups` bind to `Roles` (via `RoleBindings`) and `ClusterRoles` (via `ClusterRoleBindings`)
-
-⚠️ Rules :
-- Avoid to bind `User` directly to `Roles`/`ClusterRoles`
-- Avoid to give habilitations via CLI
-
-Note :
-This Chart has primarily been designed for Openshift, so apiVersion in [values.yaml](values.yaml) reflects that. Change it for your needs.
+Define your Kubernetes RBAC rules in a centralized and automatically way without any CRDs ! 🚀
 
 ## How to
 
-### The GitOps way
+1. Fork this repo
+2. [Define your rules](#rbac-rules-maintenance)
+3. [Deploy the way you want](#deploy-it) !
 
-Use it with ArgoCD or Flux to automatically updates and reconcile RBAC in cluster from your Git repo.
+## Deploy it
 
-Hence, managing rights are just a matter of reviewing code ! 🤩
+### Deploy the GitOps way
 
-### Manually
+Use a GitOps controller (like [ArgoCD](https://argoproj.github.io/cd/) or [Flux](https://fluxcd.io/)) to point to your fork. Then your rules are automatically applied and reconcilied. 
+
+Now, give rights to everybody in your organisation to submit a PR and managing rights are just a matter of reviewing code ! 🤩
+
+### Deploy manually
 #### Install / Update a release manually
 
 ⚠️ **Need cluster-admin role**
@@ -39,10 +32,15 @@ $ helm upgrade --install --force --create-namespace -f values.cluster1.yaml helm
 $ helm uninstall helm-rbac -n helm-rbac
 ```
 
-## RBAC Maintainance
+## RBAC Rules Maintainance
 
-Common definitions shared between clusters must be defined in `values.yaml`. 
-While specific definitions for a cluster must be defined in its own value files.
+### Best practices
+
+- Use a dedicated namespace for your helm release
+- ⚠️ Avoid to bind users directly to `Roles`/`ClusterRoles`. Instead define groups of users (e.g. devteam, qateam, etc.).
+- Prefer predefined `ClusterRoles`
+- In case of multi-clusters, define common rules in default `values.yaml`, while specific definitions for a cluster will be defined in its own value files.
+
 
 ### Rules
 
@@ -56,15 +54,46 @@ While specific definitions for a cluster must be defined in its own value files.
 
 **What to define ?**
 
+You can define :
+- `Roles` (prefer using predefined ones),
+- `ClusterRoles` (prefer using predefined ones),
+- `Groups`,
+- `RoleBindings`,
+- `ClusterRoleBindings`.
+
 ⚠️ You are free to define values but you have to use existing objects (Groups, Namespaces, Roles, ClusterRoles) :
 - Roles are defined in namespaces. By default, no one is defined. See specific namespace definition for that.
-- Main ClusterRoles are (`admin`, `edit`, `view`, `guest`)
+- Some convenient predefined ClusterRoles are `admin`, `edit`, `view`, `guest`.
 
+Roles must be defined like this :
+```yaml
+roles:
+  <Existing namespace name>:
+    <Role name>:
+    # List of grants
+    - apiGroups: [""]
+      resources: ["pods", "configmaps"]
+      verbs: ["get", "list"]
+    - apiGroups: [""]
+      resources: ["pvc"]
+      verbs: ["get", "list"]
+```
+
+ClusterRoles must be defined like this :
+```yaml
+clusterRoles:
+  <ClusterRole name>:
+  # List of grants
+  - apiGroups: [""]
+    resources: ["pods", "pods/log"]
+    verbs: ["get", "list"]
+```
 
 Groups must be defined like this :
 ```yaml
 groups:
   <name of the group>:
+  # List of users
   - <username1>
   - <username2>
   - ...
@@ -74,30 +103,32 @@ RoleBindings must be defined like this :
 ```yaml
 roleBindings:
   <Existing namespace name>:
-    <Existing Role name>:
+    <Existing/Defined Role/ClusterRole name>:
+      # List of groups/users/serviceAccounts granted with this role/clusterRole in this namespace
       groups:
-      - <Existing Group "name">
+      - <Existing/Defined Group "name">
       - ...
       users:
       - <Existing User "name">
       - ...
       serviceAccounts:
-      - <Existing ServiceAccount "namespace/name" )>
+      - <Existing ServiceAccount "namespace:name" )>
       - ...
 ```
 
 ClusterRoleBindings must be defined like this :
 ```yaml
 clusterRoleBindings:
-  <Existing ClusterRole name>:
+  <Existing/Defined ClusterRole name>:
+    # List of groups/users/serviceAccounts granted with this clusterRole in the cluster
     groups:
-    - <Existing Group "name">
+    - <Existing/Defined Group "name">
     - ...
     users:
     - <Existing User "name">
-    - ...
+    - ...œ
     serviceAccounts:
-    - <Existing ServiceAccount "namespace/name" )>
+    - <Existing ServiceAccount "namespace:name" )>
     - ...
 ```
 
@@ -117,7 +148,7 @@ clusterRoleBindings:
 
 ## Known problems
 
-1. Users in RoleBindings
+### 1. Openshift 3.11 : Users in RoleBindings
 
 It seems that this definition is not applied by Openshift 3.11.
 

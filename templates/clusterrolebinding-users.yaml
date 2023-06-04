@@ -8,13 +8,16 @@ kind: ClusterRoleBinding
 metadata:
   name: "rbac-{{ $clusterRoleKey }}-users"
 roleRef:
+  apiGroup: {{ include "clusterRole.apiGroup" $ }}
+  kind: ClusterRole
   name: "{{ $clusterRoleKey }}"
 subjects:
 
 {{- /*  For all Users */}}
 {{- range $entityKey, $entityValues := $clusterRoleObject }}
 {{- range $entityValues }}
-- kind: User
+- apiGroup: {{ include "user.apiGroup" $ }}
+  kind: User
   name: {{ . | quote }}
 {{- end }}
 {{- end }}

@@ -4,9 +4,9 @@
 
 # Specific users/groups for this cluster
 groups:
-  clusterspecificgroup1:
-  - clusterspecificuser1
-  - clusterspecificuser2
+  clusterSpecificGroup:
+  - clusterSpecificUser1
+  - clusterSpecificUser2
 
 # Specific Rolebindings for this cluster
 roleBindings:
@@ -18,22 +18,22 @@ roleBindings:
   namespace1:
     admin:
       groups:
-      - clusterspecificuser1
-    edit:      
+      - clusterSpecificUser1
+    edit:
       serviceAccounts:
-      - namespace2/serviceaccount2
+      - namespace2:serviceAccount2
     view:
       groups:
-      - clusterspecificuser2
+      - clusterSpecificUser2
 
   #######################################
   namespace2:
     admin:
       groups:
-      - clusterspecificuser2
+      - clusterSpecificUser2
     edit:      
       serviceAccounts:
-      - namespace2/serviceaccount1
+      - namespace2/serviceAccount1
     view:
       groups:
-      - clusterspecificuser1
+      - clusterSpecificGroup

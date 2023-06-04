@@ -12,6 +12,8 @@ metadata:
   name: "{{ $namespaceKey }}-{{ $roleKey }}-sa"
   namespace: "{{ $namespaceKey }}"
 roleRef:
+  apiGroup: {{ include "role.apiGroup" $ }}
+  kind: Role
   name: "{{ $roleKey }}"
 subjects:
 {{- /*  For all subject types (User, Group) */}}
@@ -19,8 +21,8 @@ subjects:
 {{- if eq $entityKey "serviceAccounts" }}
 {{- range $entityValues }}
 - kind: ServiceAccount
-  namespace: {{ (split "/" .)._0 | quote }}
-  name: {{ (split "/" .)._1 | quote }}
+  namespace: {{ (split ":" .)._0 | quote }}
+  name: {{ (split ":" .)._1 | quote }}
 {{- end }}
 {{- end }}
 {{- end }}

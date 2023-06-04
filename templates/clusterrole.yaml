@@ -1,0 +1,14 @@
+{{- /*  For all roles defined */}}
+{{- range $roleKey, $roleObject := .Values.clusterRoles }}
+---
+{{- /*  Define a ClusterRole 'rolename */}}
+apiVersion: {{ $.Values.global.apiVersion.role }}
+kind: ClusterRole
+metadata:
+  name: "{{ $roleKey }}"
+rules:
+{{- /*  Iterate over rules */}}
+{{- range $roleObject }}
+- {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- end }}
